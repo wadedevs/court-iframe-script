@@ -41,7 +41,7 @@ Edit `client.lua` and change this line to the website you want to display:
 local websiteUrl = "https://example.com"
 ```
 
-**Note:** Many websites block being embedded in iframes (X-Frame-Options / CSP). Test your target site. YouTube embed URLs, many CAD systems, and simple documentation sites usually work. Google, Facebook, Discord, etc. often do not.
+**Note:** The website has already been set to https://docket.sadoj.net/admin/login. This takes you directly to the CourtConnect login screen for TyGuys.
 
 ## Commands
 
