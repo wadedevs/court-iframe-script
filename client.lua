@@ -2,6 +2,9 @@ local isOpen = false
 
 -- CHANGE THIS to the website you want to display
 local websiteUrl = "https://docket.sadoj.net/admin/login"
+-- Tell the docket which NUI origin frames it (https://cfx-nui-<resource>), so it can allow
+-- framing even when the in-game browser sends no Referer.
+local embedParam = "embed=cfx-nui-" .. GetCurrentResourceName()
 
 RegisterNetEvent('court:open', function()
     if isOpen then return end
@@ -10,7 +13,7 @@ RegisterNetEvent('court:open', function()
     SetNuiFocus(true, true)
     SendNUIMessage({
         type = 'open',
-        url = websiteUrl
+        url = websiteUrl .. (string.find(websiteUrl, "?", 1, true) and "&" or "?") .. embedParam
     })
 end)
 
