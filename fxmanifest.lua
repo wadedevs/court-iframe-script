@@ -1,15 +1,25 @@
 fx_version 'cerulean'
 game 'gta5'
+lua54 'yes'
 
-author 'Court Web UI'
-description 'In-game website viewer for court systems (permission gated)'
-version '1.0.0'
+name 'fivem-iframe'
+description 'Show any website in an in-game panel. Sites, commands and permissions come from config.lua.'
+version '2.0.0'
 
 ui_page 'html/index.html'
 
 files {
-    'html/index.html'
+    'html/index.html',
+    'html/style.css',
+    'html/app.js',
 }
 
-client_script 'client.lua'
-server_script 'server.lua'
+shared_script 'config.lua'
+
+server_scripts {
+    'server/sha256.lua',
+    'server/embed.lua',
+    'server/server.lua',
+}
+
+client_script 'client/client.lua'

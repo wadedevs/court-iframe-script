@@ -3,126 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Court Viewer</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: transparent;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow: hidden;
-        }
-
-        #box {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 85vw;
-            height: 85vh;
-            background: #111318;
-            border: 2px solid #2c3340;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
-        }
-
-        #header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 42px;
-            background: linear-gradient(180deg, #1a1f2a 0%, #141820 100%);
-            border-bottom: 1px solid #2c3340;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 0 12px;
-            z-index: 20;
-        }
-
-        #close-btn {
-            background: #c0392b;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            width: 28px;
-            height: 28px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.15s ease;
-        }
-
-        #close-btn:hover {
-            background: #e74c3c;
-        }
-
-        iframe {
-            position: absolute;
-            top: 42px;
-            left: 0;
-            width: 100%;
-            height: calc(100% - 42px);
-            border: none;
-            background: #0e1116;
-        }
-    </style>
+    <!-- Send our origin (https://cfx-nui-<resource>) as the Referer when the browser allows it. -->
+    <meta name="referrer" content="origin">
+    <title>Web Viewer</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="box">
-        <div id="header">
-            <button id="close-btn" title="Close">✕</button>
+    <div id="panel" hidden>
+        <div id="bar">
+            <span id="title"></span>
+            <div id="actions">
+                <button id="reload" title="Reload">&#x21bb;</button>
+                <button id="close" title="Close (Esc)">&#x2715;</button>
+            </div>
         </div>
-        <!-- The site uses the Referer origin (https://cfx-nui-<resource>) to allow being framed; keep this policy. -->
-        <iframe id="webframe" src="about:blank" allow="fullscreen" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        <div id="body">
+            <iframe id="frame" src="about:blank" allow="fullscreen; clipboard-read; clipboard-write" referrerpolicy="origin"></iframe>
+            <div id="loading" class="overlay" hidden><div class="spinner"></div><p>Loading&hellip;</p></div>
+            <div id="failed" class="overlay" hidden>
+                <h2>This site can't be shown in game</h2>
+                <p>It didn't finish loading. The site may block being shown inside other pages, or it may be down.</p>
+                <button id="retry">Try again</button>
+            </div>
+        </div>
     </div>
-
-    <script>
-        const box = document.getElementById('box');
-        const frame = document.getElementById('webframe');
-        const closeBtn = document.getElementById('close-btn');
-
-        window.addEventListener('message', (event) => {
-            const data = event.data;
-            if (!data || !data.type) return;
-
-            if (data.type === 'open') {
-                if (frame.src !== data.url) {
-                    frame.src = data.url;
-                }
-                box.style.display = 'block';
-            } else if (data.type === 'close') {
-                box.style.display = 'none';
-                // Optional: clear src to free memory
-                // frame.src = 'about:blank';
-            }
-        });
-
-        function closeUI() {
-            fetch(`https://${GetParentResourceName()}/close`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-                body: JSON.stringify({})
-            }).catch(() => {});
-        }
-
-        closeBtn.addEventListener('click', closeUI);
-
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeUI();
-            }
-        });
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
